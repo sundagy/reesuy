@@ -2,6 +2,12 @@
 
 My attempt to implement a platform-friendly, fast and multi-platform image processing application. 
 
+### Required:
+```bash
+nvm use v16.16.0
+npm install -g yarn
+yarn
+```
 
 ### Available commands:
 
