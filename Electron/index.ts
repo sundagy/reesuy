@@ -3,13 +3,14 @@ import { join } from 'path'
 import { format } from 'url'
 
 //Electron
-import { app, ipcMain, IpcMainEvent, shell } from 'electron'
+import { app, ipcMain, IpcMainEvent, shell, Menu } from 'electron'
 //BrowserWindow Options
 import winOptions from './win.options'
 
 // Packages
 import isDev from 'electron-is-dev'
 import prepareNext from 'electron-next'
+import {menuTemplate} from "./menu";
 
 //const { BrowserWindow: BrowserWindowVibrancy } = require("electron-acrylic-window");
 const { BrowserWindow } = require("electron");
@@ -24,10 +25,10 @@ app.on('ready', async () => {
   const win = new BrowserWindow({...winOptions})
 
   // Open links in browser
-	win.webContents.setWindowOpenHandler((details: { url: string }) => {
-		shell.openExternal(details.url)
-		return { action: 'deny' }
-	})
+  win.webContents.setWindowOpenHandler((details: { url: string }) => {
+    shell.openExternal(details.url)
+    return { action: 'deny' }
+  })
 
   // open app
   const url = isDev
@@ -37,29 +38,29 @@ app.on('ready', async () => {
       protocol: 'file:',
       slashes: true,
     })
-    win.loadURL(url)
-
-
+  win.loadURL(url)
 
   //WINDOW CONTROLS
-    //@warn Maximize
-    ipcMain.on('MaximizeApp', () => {
-      if (win.isMaximized()) {
-        win.unmaximize()
-      } else {
-        win.maximize()
-      }
-    })
-    //@warn Minimize
-    ipcMain.on('MinimizeApp', () => {
-      win.minimize()
-    })
-    //@warn Close
-    ipcMain.on('CloseApp', () => {
-      win.close()
-    })
-})
+  //@warn Maximize
+  ipcMain.on('MaximizeApp', () => {
+    if (win.isMaximized()) {
+      win.unmaximize()
+    } else {
+      win.maximize()
+    }
+  })
+  //@warn Minimize
+  ipcMain.on('MinimizeApp', () => {
+    win.minimize()
+  })
+  //@warn Close
+  ipcMain.on('CloseApp', () => {
+    win.close()
+  })
 
+  const mainMenu = Menu.buildFromTemplate(menuTemplate)
+  win.setMenu(mainMenu)
+})
 
 
 
@@ -73,4 +74,3 @@ ipcMain.on('message', (event: IpcMainEvent, message: any) => {
   console.log(message)
   setTimeout(() => event.sender.send('message', 'hi from electron'), 500)
 })
-

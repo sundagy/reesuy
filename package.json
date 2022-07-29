@@ -1,12 +1,12 @@
 {
-  "name": "electronext.js",
-  "productName": "ElectroNext.js",
+  "name": "reesuy",
+  "productName": "Reesuy",
   "version": "1.0.0",
-  "description": "Electron App Example with Next.js + Typescript",
-  "repository": "https://github.com/electronextjs/ElectroNext.js",
+  "description": "Yet another multi-platform image processing app with Next.js + Typescript",
+  "repository": "https://github.com/sundagy/reesuy",
   "author": {
-    "name": "André Malveira",
-    "email": "andremalveira.dev@gmail.com"
+    "name": "Maksim B",
+    "email": "mblinenkov@yandex.ru"
   },
   "main": "Electron/.electron/index.js",
   "scripts": {
@@ -41,10 +41,6 @@
     "typescript": "^4.6.3"
   },
   "build": {
-    "asar": true,
-    "files": [
-      "Electron/.electron",
-      "Next/out"
-    ]
+    "asar": true
   }
 }

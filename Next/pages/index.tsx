@@ -1,9 +1,9 @@
-import { ElectroNextHome } from "electronext"
-
 const AppHome = () => {
-  return (<>
-    <ElectroNextHome/>
-  </>)
+  return (<div style={{color: 'black'}}>
+
+    <span>Reesuy</span>
+
+  </div>)
 }
 
 export default AppHome

@@ -1,9 +1,7 @@
 {
   "titleBar": {
-    "visible":true,
-    "favIcon": true,
-    "menuIcon": true,
-    "controlsType": "windows", 
-    "titlePosition": "start"
+    "visible": false,
+    "favIcon": false,
+    "menuIcon": false
   }
 }
