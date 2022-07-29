@@ -1,6 +1,8 @@
 # Reesuy
 
-My attempt to implement a user-friendly, fast and multi-platform image processing application. 
+**Work in progress! Nothing interesting so far.**
+
+My attempt to implement a user-friendly, fast and multi-platform image processing application.
 
 ### Prerequireds:
 ```bash

@@ -60,6 +60,10 @@ app.on('ready', async () => {
 
   const mainMenu = Menu.buildFromTemplate(menuTemplate)
   win.setMenu(mainMenu)
+
+  if (process.env.NODE_ENV !== 'production') {
+    win.webContents.openDevTools();
+  }
 })
 
 

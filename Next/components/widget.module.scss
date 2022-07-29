@@ -1,0 +1,20 @@
+.widget {
+  color: black;
+  background-color: red;
+  min-width: 60px;
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  //align-items: baseline;
+  //align-content: stretch;
+  position: absolute;
+}
+
+.header {
+  background-color: #666;
+  height: 16px;
+  margin: 1px;
+  cursor: grabbing;
+}
