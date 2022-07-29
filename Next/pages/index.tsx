@@ -1,9 +1,11 @@
+import Layout from "../components/layout";
+
 const AppHome = () => {
-  return (<div style={{color: 'black'}}>
+  return (<Layout>
 
     <span>Reesuy</span>
 
-  </div>)
+  </Layout>)
 }
 
 export default AppHome
