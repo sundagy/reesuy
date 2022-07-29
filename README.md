@@ -1,8 +1,8 @@
 # Reesuy
 
-My attempt to implement a platform-friendly, fast and multi-platform image processing application. 
+My attempt to implement a user-friendly, fast and multi-platform image processing application. 
 
-### Required:
+### Prerequireds:
 ```bash
 nvm use v16.16.0
 npm install -g yarn
