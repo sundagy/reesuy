@@ -15,6 +15,10 @@
   height: 16px;
   margin: 1px;
   cursor: grabbing;
+  position: relative;
+  &:hover {
+    //background-color: #777777;
+  }
 }
 
 .mouseEvents {
@@ -24,4 +28,23 @@
   width: 100%;
   height: 100%;
   cursor: grabbing;
+}
+
+.body {
+
+}
+
+.close {
+  border: none;
+  background-color: #444444;
+  width: 14px;
+  height: 14px;
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  padding: 0;
+  cursor: pointer;
+  &:hover {
+    background-color: #8a8a8a;
+  }
 }
