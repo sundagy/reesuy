@@ -1,7 +1,8 @@
 import Tools from "./tools";
+import style from './layout.module.scss';
 
 const Layout = ({children}) => {
-    return (<div style={{color: 'black'}}>
+    return (<div className={style.layout}>
 
         <Tools/>
 

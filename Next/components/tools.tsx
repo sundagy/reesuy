@@ -1,7 +1,7 @@
 import Widget from "./widget";
 
 const Tools = ({children}) => {
-    return (<Widget style={{height: '200px'}}>
+    return (<Widget>
 
         {children}
 
