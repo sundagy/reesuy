@@ -49,19 +49,6 @@ class Widget extends React.Component<any, any> {
             <div className={style.body}>
                 {this.props.children}
             </div>
-            {pressed && <div
-                className={style.mouseEvents}
-                onMouseMove={(e) => {
-                    if (e.buttons !== 1) {
-                        return;
-                    }
-                    const {downX, downY} = this;
-                    this.setState({left: e.pageX - downX, top: e.pageY - downY});
-                }}
-                onMouseUp={() => {
-                    this.setState({pressed: false});
-                }}
-            />}
 
             <div className={[style.edge, style.edgeTop].join(' ')}/>
             <div className={[style.edge, style.edgeLeft].join(' ')}/>
@@ -72,6 +59,26 @@ class Widget extends React.Component<any, any> {
             <div className={[style.edge, style.corner10].join(' ')}/>
             <div className={[style.edge, style.corner11].join(' ')}/>
             <div className={[style.edge, style.corner01].join(' ')}/>
+
+            {pressed && <div
+                className={style.mouseEvents}
+                onMouseLeave={(e) => {
+                    this.setState({pressed: false});
+                }}
+                onMouseMove={(e) => {
+                    const {downX, downY} = this;
+                    console.log(e.buttons, downX, e.pageX, {left: e.pageX - downX, top: e.pageY - downY});
+
+                    if (e.buttons !== 1) {
+                        this.setState({pressed: false});
+                        return;
+                    }
+                    this.setState({left: e.pageX - downX, top: e.pageY - downY});
+                }}
+                onMouseUp={() => {
+                    this.setState({pressed: false});
+                }}
+            />}
         </div>)
     }
 }
