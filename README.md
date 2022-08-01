@@ -2,11 +2,11 @@
 
 **Work in progress! Nothing interesting so far.**
 
-My attempt to implement a user-friendly, fast and multi-platform image processing application.
+My attempt to implement a user-friendly, fast and multi-platform image processing application for everyone.
 
 ### Prerequireds:
 ```bash
-nvm use v16.16.0
+nvm install v16.16.0
 npm install -g yarn
 yarn
 ```
@@ -18,7 +18,7 @@ yarn
 "build-electron": transpile electron layer
 "build": build both layers
 "dev": start dev version
-"dist": create production electron build
+"dist": create production build
 "type-check": check TypeScript in project
 ```
 
@@ -27,5 +27,4 @@ yarn
 - [Next.js](https://nextjs.org)
 
 ## License
-ElectroNext.js is licensed under the MIT License
-Reesuy is licensed under the MIT License
+Reesuy & ElectroNext.js is licensed under the MIT License

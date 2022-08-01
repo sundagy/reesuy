@@ -7,8 +7,8 @@ class Widget extends React.Component<any, any> {
     private downX = 0;
     private downY = 0;
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             position: {left: 0, top: 0},
             pressed: false,
@@ -20,6 +20,7 @@ class Widget extends React.Component<any, any> {
     render(){
         const {position, pressed} = this.state;
         return (<div className={style.widget} style={{...position}}>
+
             <div
                 className={style.header}
                 onMouseDown={(e) => {
@@ -53,6 +54,16 @@ class Widget extends React.Component<any, any> {
                     this.setState({pressed: false});
                 }}
             />}
+
+            <div className={[style.edge, style.edgeTop].join(' ')}/>
+            <div className={[style.edge, style.edgeLeft].join(' ')}/>
+            <div className={[style.edge, style.edgeRight].join(' ')}/>
+            <div className={[style.edge, style.edgeBottom].join(' ')}/>
+
+            <div className={[style.edge, style.corner00].join(' ')}/>
+            <div className={[style.edge, style.corner10].join(' ')}/>
+            <div className={[style.edge, style.corner11].join(' ')}/>
+            <div className={[style.edge, style.corner01].join(' ')}/>
         </div>)
     }
 }
