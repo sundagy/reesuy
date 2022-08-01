@@ -1,6 +1,6 @@
 
 import style from './widget.module.scss';
-import React from "react";
+import React, {MouseEventHandler} from "react";
 
 class Widget extends React.Component<any, any> {
 
@@ -10,16 +10,24 @@ class Widget extends React.Component<any, any> {
     constructor(props) {
         super(props);
         this.state = {
-            position: {left: 0, top: 0},
+            left: 0,
+            top: 0,
+            width: 160,
+            height: 200,
             pressed: false,
         }
     }
     onClose(){
         //...
     }
+    resize(e: MouseEvent) {
+        if (e.buttons == 1) {
+            this.setState({width: e.pageX - this.state.left});
+        }
+    }
     render(){
-        const {position, pressed} = this.state;
-        return (<div className={style.widget} style={{...position}}>
+        const {pressed, left, top, width, height} = this.state;
+        return (<div className={style.widget} style={{left, top, width, height}}>
 
             <div
                 className={style.header}
@@ -48,7 +56,7 @@ class Widget extends React.Component<any, any> {
                         return;
                     }
                     const {downX, downY} = this;
-                    this.setState({position: {left: e.pageX - downX, top: e.pageY - downY}});
+                    this.setState({left: e.pageX - downX, top: e.pageY - downY});
                 }}
                 onMouseUp={() => {
                     this.setState({pressed: false});
@@ -57,7 +65,7 @@ class Widget extends React.Component<any, any> {
 
             <div className={[style.edge, style.edgeTop].join(' ')}/>
             <div className={[style.edge, style.edgeLeft].join(' ')}/>
-            <div className={[style.edge, style.edgeRight].join(' ')}/>
+            <div className={[style.edge, style.edgeRight].join(' ')} onMouseMove={this.resize.bind(this)}/>
             <div className={[style.edge, style.edgeBottom].join(' ')}/>
 
             <div className={[style.edge, style.corner00].join(' ')}/>
