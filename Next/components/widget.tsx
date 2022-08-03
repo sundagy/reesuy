@@ -67,7 +67,7 @@ class Widget extends React.Component<any, any> {
                 }}
                 onMouseMove={(e) => {
                     const {downX, downY} = this;
-                    console.log(e.buttons, downX, e.pageX, {left: e.pageX - downX, top: e.pageY - downY});
+                    //console.log(e.buttons, downX, e.pageX, {left: e.pageX - downX, top: e.pageY - downY});
 
                     if (e.buttons !== 1) {
                         this.setState({pressed: false});

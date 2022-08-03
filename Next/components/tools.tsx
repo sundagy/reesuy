@@ -3,7 +3,7 @@ import Widget from "./widget";
 const Tools = ({children}) => {
     return (<Widget>
 
-        {children}
+        <button>+</button>
 
     </Widget>)
 }
