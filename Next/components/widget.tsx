@@ -4,9 +4,6 @@ import React, {MouseEventHandler} from "react";
 
 class Widget extends React.Component<any, any> {
 
-    private downX = 0;
-    private downY = 0;
-
     constructor(props) {
         super(props);
         this.state = {
@@ -14,32 +11,47 @@ class Widget extends React.Component<any, any> {
             top: 0,
             width: 160,
             height: 200,
-            pressed: false,
         }
+    }
+    componentDidMount() {
+
     }
     onClose(){
         //...
     }
-    resize(e: MouseEvent) {
-        if (e.buttons == 1) {
-            this.setState({width: e.pageX - this.state.left});
+    startResize(x, y) {
+        const mouseMove = (e: MouseEvent) => {
+            x == 1 && this.setState({width: e.clientX - this.state.left - 2});
+            x ==-1 && this.setState({left: e.clientX - this.state.left});
         }
+        document.addEventListener('mousemove', mouseMove);
+        document.addEventListener('mouseup', () => {
+            document.removeEventListener('mousemove', mouseMove);
+        }, {once: true});
+    }
+    startMove(e: MouseEvent){
+        if ((e.target as Element).id !== 'header') return;
+
+        const rect = (e.target as Element).parentElement.getBoundingClientRect();
+        const downX = e.clientX - rect.left;
+        const downY = e.clientY - rect.top;
+
+        const mouseMove = (e: MouseEvent) => {
+            this.setState({left: e.pageX - downX, top: e.pageY - downY});
+        }
+        document.addEventListener('mousemove', mouseMove);
+        document.addEventListener('mouseup', (e: MouseEvent) => {
+            document.removeEventListener('mousemove', mouseMove);
+        }, {once: true});
     }
     render(){
-        const {pressed, left, top, width, height} = this.state;
+        const {left, top, width, height} = this.state;
         return (<div className={style.widget} style={{left, top, width, height}}>
 
             <div
+                id={'header'}
                 className={style.header}
-                onMouseDown={(e) => {
-                    if ((e.target as Element).className !== style.header) {
-                        return;
-                    }
-                    this.setState({pressed: true});
-                    const rect = (e.target as Element).parentElement.getBoundingClientRect();
-                    this.downX = e.clientX - rect.left;
-                    this.downY = e.clientY - rect.top;
-                }}
+                onMouseDown={this.startMove.bind(this)}
             >
                 <button
                     className={style.close}
@@ -51,34 +63,14 @@ class Widget extends React.Component<any, any> {
             </div>
 
             <div className={[style.edge, style.edgeTop].join(' ')}/>
-            <div className={[style.edge, style.edgeLeft].join(' ')}/>
-            <div className={[style.edge, style.edgeRight].join(' ')} onMouseMove={this.resize.bind(this)}/>
+            <div className={[style.edge, style.edgeLeft].join(' ')} onMouseDown={this.startResize.bind(this, -1, 0)}/>
+            <div className={[style.edge, style.edgeRight].join(' ')} onMouseDown={this.startResize.bind(this, 1, 0)}/>
             <div className={[style.edge, style.edgeBottom].join(' ')}/>
 
             <div className={[style.edge, style.corner00].join(' ')}/>
             <div className={[style.edge, style.corner10].join(' ')}/>
             <div className={[style.edge, style.corner11].join(' ')}/>
             <div className={[style.edge, style.corner01].join(' ')}/>
-
-            {pressed && <div
-                className={style.mouseEvents}
-                onMouseLeave={(e) => {
-                    this.setState({pressed: false});
-                }}
-                onMouseMove={(e) => {
-                    const {downX, downY} = this;
-                    //console.log(e.buttons, downX, e.pageX, {left: e.pageX - downX, top: e.pageY - downY});
-
-                    if (e.buttons !== 1) {
-                        this.setState({pressed: false});
-                        return;
-                    }
-                    this.setState({left: e.pageX - downX, top: e.pageY - downY});
-                }}
-                onMouseUp={() => {
-                    this.setState({pressed: false});
-                }}
-            />}
         </div>)
     }
 }

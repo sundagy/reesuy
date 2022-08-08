@@ -1,4 +1,4 @@
-$borderSize: 3px;
+$borderSize: 6px;
 
 .widget {
   color: black;
@@ -10,7 +10,7 @@ $borderSize: 3px;
   flex-wrap: nowrap;
   justify-content: flex-start;
   position: absolute;
-  padding: $borderSize;
+  padding: 0;
 }
 
 .header {
@@ -58,64 +58,67 @@ $borderSize: 3px;
 .edge {
   background-color: #c45b5b;
   position: absolute;
+  &:hover {
+    background-color: #da1c1c;
+  }
 }
 .edgeRight {
   width: $borderSize;
   cursor: e-resize;
-  right:0;
-  top: $borderSize;
-  bottom: $borderSize;
+  right: -$borderSize;
+  top: 0;
+  bottom: 0;
 }
 .edgeLeft {
   width: $borderSize;
   cursor: w-resize;
-  left: 0;
-  top: $borderSize;
-  bottom: $borderSize;
+  left: -$borderSize;
+  top: 0;
+  bottom: 0;
 }
 .edgeTop {
   height: $borderSize;
   cursor: n-resize;
-  left: $borderSize;
-  right: $borderSize;
-  top: 0;
+  left: 0;
+  right: 0;
+  top: -$borderSize;
 }
 .edgeBottom {
   height: $borderSize;
   cursor: s-resize;
-  left: $borderSize;
-  right: $borderSize;
-  bottom: 0;
+  left: 0;
+  right: 0;
+  bottom: -$borderSize;
 }
 
 .corner00 {
   width: $borderSize;
   height: $borderSize;
-  left:0;
-  top: 0;
+  left: -$borderSize;
+  top: -$borderSize;
   cursor: nw-resize;
 }
 
 .corner10 {
   width: $borderSize;
   height: $borderSize;
-  right: 0;
-  top: 0;
+  right: -$borderSize;
+  top: -$borderSize;
   cursor: ne-resize;
 }
 
 .corner11 {
   width: $borderSize;
   height: $borderSize;
-  right: 0;
-  bottom: 0;
+  right: -$borderSize;
+  bottom: -$borderSize;
   cursor: se-resize;
 }
 
 .corner01 {
   width: $borderSize;
   height: $borderSize;
-  left: 0;
-  bottom: 0;
+  left: -$borderSize;
+  bottom: -$borderSize;
   cursor: sw-resize;
 }
