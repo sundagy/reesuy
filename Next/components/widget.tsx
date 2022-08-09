@@ -11,6 +11,7 @@ class Widget extends React.Component<any, any> {
             top: 0,
             width: 160,
             height: 200,
+            float: true
         }
     }
     componentDidMount() {
@@ -19,10 +20,22 @@ class Widget extends React.Component<any, any> {
     onClose(){
         //...
     }
-    startResize(x, y) {
+    startResize(x, y, e: MouseEvent) {
+        let ax = e.clientX,
+            ay = e.clientY;
         const mouseMove = (e: MouseEvent) => {
-            x == 1 && this.setState({width: e.clientX - this.state.left - 2});
-            x ==-1 && this.setState({left: e.clientX - this.state.left});
+            const {left, top, width, height} = this.state;
+            const dx = ax-e.clientX;
+            const dy = ay-e.clientY;
+            ax = e.clientX;
+            ay = e.clientY;
+            const s = {
+                ...(x == 1 ? {width: width - dx} : {}),
+                ...(x ==-1 ? {left: left - dx, width: width + dx} : {}),
+                ...(y == 1 ? {height: height - dy} : {}),
+                ...(y ==-1 ? {top: top - dy, height: height + dy} : {}),
+            };
+            this.setState(s);
         }
         document.addEventListener('mousemove', mouseMove);
         document.addEventListener('mouseup', () => {
@@ -45,7 +58,7 @@ class Widget extends React.Component<any, any> {
         }, {once: true});
     }
     render(){
-        const {left, top, width, height} = this.state;
+        const {left, top, width, height, float} = this.state;
         return (<div className={style.widget} style={{left, top, width, height}}>
 
             <div
@@ -62,15 +75,17 @@ class Widget extends React.Component<any, any> {
                 {this.props.children}
             </div>
 
-            <div className={[style.edge, style.edgeTop].join(' ')}/>
-            <div className={[style.edge, style.edgeLeft].join(' ')} onMouseDown={this.startResize.bind(this, -1, 0)}/>
-            <div className={[style.edge, style.edgeRight].join(' ')} onMouseDown={this.startResize.bind(this, 1, 0)}/>
-            <div className={[style.edge, style.edgeBottom].join(' ')}/>
+            {float && <>
+                <div className={[style.edge, style.edgeTop].join(' ')} onMouseDown={this.startResize.bind(this, 0, -1)}/>
+                <div className={[style.edge, style.edgeLeft].join(' ')} onMouseDown={this.startResize.bind(this, -1, 0)}/>
+                <div className={[style.edge, style.edgeRight].join(' ')} onMouseDown={this.startResize.bind(this, 1, 0)}/>
+                <div className={[style.edge, style.edgeBottom].join(' ')} onMouseDown={this.startResize.bind(this, 0, 1)}/>
 
-            <div className={[style.edge, style.corner00].join(' ')}/>
-            <div className={[style.edge, style.corner10].join(' ')}/>
-            <div className={[style.edge, style.corner11].join(' ')}/>
-            <div className={[style.edge, style.corner01].join(' ')}/>
+                <div className={[style.edge, style.corner00].join(' ')} onMouseDown={this.startResize.bind(this, -1, -1)}/>
+                <div className={[style.edge, style.corner10].join(' ')} onMouseDown={this.startResize.bind(this, 1, -1)}/>
+                <div className={[style.edge, style.corner11].join(' ')} onMouseDown={this.startResize.bind(this, 1, 1)}/>
+                <div className={[style.edge, style.corner01].join(' ')} onMouseDown={this.startResize.bind(this, -1, 1)}/>
+            </>}
         </div>)
     }
 }
