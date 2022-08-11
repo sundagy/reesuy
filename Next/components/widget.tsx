@@ -2,7 +2,11 @@
 import style from './widget.module.scss';
 import React, {MouseEventHandler} from "react";
 
-class Widget extends React.Component<any, any> {
+interface WidgetProps {
+    onMove: (x, y, w, h: number) => void;
+}
+
+class Widget extends React.Component<WidgetProps, any> {
 
     constructor(props) {
         super(props);
@@ -35,6 +39,8 @@ class Widget extends React.Component<any, any> {
                 ...(y == 1 ? {height: height - dy} : {}),
                 ...(y ==-1 ? {top: top - dy, height: height + dy} : {}),
             };
+            if (s.width && s.width < 60) s.width = 60;
+            if (s.height && s.height < 60) s.height = 60;
             this.setState(s);
         }
         document.addEventListener('mousemove', mouseMove);
@@ -50,7 +56,10 @@ class Widget extends React.Component<any, any> {
         const downY = e.clientY - rect.top;
 
         const mouseMove = (e: MouseEvent) => {
-            this.setState({left: e.pageX - downX, top: e.pageY - downY});
+            this.setState({left: e.pageX - downX, top: e.pageY - downY}, ()=>{
+                const {left, top, width, height} = this.state;
+                this.props.onMove(left, top, width, height);
+            });
         }
         document.addEventListener('mousemove', mouseMove);
         document.addEventListener('mouseup', (e: MouseEvent) => {
