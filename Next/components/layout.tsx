@@ -2,6 +2,19 @@ import Tools from "./tools";
 import style from './layout.module.scss';
 import React from "react";
 
+interface GizmoProps {
+
+}
+
+class Gizmo extends React.Component<GizmoProps, any> {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return <div className={style.gizmo}/>;
+    }
+}
+
 class Workspace extends React.Component<any, any> {
     constructor(props) {
         super(props);
@@ -12,8 +25,20 @@ class Workspace extends React.Component<any, any> {
     }
 }
 
-interface SideProps {
+const widgets = {
+    gizmo: Gizmo,
+    tools: Tools,
+    workspace: Workspace,
+};
 
+interface WidgetItem {
+    type: string;
+}
+
+interface SideProps {
+    wide: boolean;
+    items: WidgetItem[];
+    updateItems: (newItems: WidgetItem[]) => void;
 }
 
 class Side extends React.Component<SideProps, any> {
@@ -24,24 +49,41 @@ class Side extends React.Component<SideProps, any> {
         this.sideRef = React.createRef();
     }
     widgetMove(x, y, w, h){
-        const el = this.sideRef.current;
-        for (let i=0; i<el.childNodes.length; i++) {
-            const w = el.childNodes[i];
-            const rect = w.getBoundingClientRect();
-            console.log(rect);
+        const {items} = this.props;
+        if (items.filter(a => a.type === 'gizmo').length) {
+            return;
         }
+
+        const el = this.sideRef.current;
+        const br = el.getBoundingClientRect();
+
+        if (Math.abs(x - br.left) < 10) {
+            console.log('gizmo');
+
+            this.props.updateItems([...items, {type: 'gizmo'}]);
+        }
+
+        /*for (let i=0; i<el.childNodes.length; i++) {
+            const w = el.childNodes[i];
+            const br = w.getBoundingClientRect();
+            console.log(br);
+        }*/
     }
     render() {
-        return <div className={style.side} ref={this.sideRef}>
-            {this.props.children}
+        const {wide, items} = this.props;
+        return <div className={style.side}
+                    ref={this.sideRef}
+                    style={wide ? {width: '100%'} : {}}
+        >
+            {items.map((w, j) => {
+                const W = widgets[w.type];
+                return <W key={`w${j}`}
+                          onMove={this.widgetMove.bind(this)}
+                />;
+            })}
         </div>;
     }
 }
-
-const widgets = {
-    tools: Tools,
-    workspace: Workspace,
-};
 
 class Layout extends React.Component<any, any> {
     private partRefs: React.RefObject<any>[] = [];
@@ -49,9 +91,9 @@ class Layout extends React.Component<any, any> {
         super(props);
         this.state = {
             parts: [
-                [],
-                ['workspace', 'tools'],
-                [],
+                {wide: false, items: []},
+                {wide: true, items: [{type: 'workspace'}, {type: 'tools'}]},
+                {wide: false, items: []},
             ],
         }
         for (let p of this.state.parts) {
@@ -66,12 +108,16 @@ class Layout extends React.Component<any, any> {
     render() {
         const {parts} = this.state;
         return <div className={style.layout}>
-            {parts.map((a, i) => <Side key={`s${i}`} ref={this.partRefs[i]}>
-                {a.map((w, j) => {
-                    const W = widgets[w];
-                    return <W key={`w${i}-${j}`} onMove={this.widgetMove.bind(this)}/>;
-                })}
-            </Side>)}
+            {parts.map((a, i) => <Side key={`s${i}`}
+                                       ref={this.partRefs[i]}
+                                       wide={a.wide}
+                                       items={a.items}
+                                       updateItems={ni => this.setState({
+                                           parts: parts.map((a, j) => i===j
+                                               ? {...a, items: ni}
+                                               : a,
+                                           )})}
+            />)}
         </div>
     }
 }
