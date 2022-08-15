@@ -45,7 +45,9 @@ class Side extends React.Component<SideProps, any> {
     private sideRef: React.RefObject<any>;
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            targetMode: false
+        }
         this.sideRef = React.createRef();
     }
     widgetMove(x, y, w, h){
@@ -69,9 +71,18 @@ class Side extends React.Component<SideProps, any> {
             console.log(br);
         }*/
     }
+    widgetMoveStart(){
+        this.setState({targetMode: true});
+        console.log('start');
+    }
+    widgetMoveEnd(){
+        this.setState({targetMode: false});
+        console.log('end');
+    }
     render() {
         const {wide, items} = this.props;
-        return <div className={style.side}
+        const {targetMode} = this.state;
+        return <div className={[style.side, ...(targetMode ? ['target'] : [])].join(' ')}
                     ref={this.sideRef}
                     style={wide ? {width: '100%'} : {}}
         >
@@ -79,6 +90,8 @@ class Side extends React.Component<SideProps, any> {
                 const W = widgets[w.type];
                 return <W key={`w${j}`}
                           onMove={this.widgetMove.bind(this)}
+                          onMoveStart={this.widgetMoveStart.bind(this)}
+                          onMoveEnd={this.widgetMoveEnd.bind(this)}
                 />;
             })}
         </div>;
@@ -100,11 +113,11 @@ class Layout extends React.Component<any, any> {
             this.partRefs.push(React.createRef());
         }
     }
-    widgetMove(x, y, w, h){
-        for (let p of this.partRefs) {
-            p.current.widgetMove(x,y,w,h)
-        }
-    }
+    //widgetMove(x, y, w, h){
+    //    for (let p of this.partRefs) {
+    //        p.current.widgetMove(x,y,w,h)
+    //    }
+    //}
     render() {
         const {parts} = this.state;
         return <div className={style.layout}>

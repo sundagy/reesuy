@@ -4,6 +4,8 @@ import React, {MouseEventHandler} from "react";
 
 interface WidgetProps {
     onMove: (x, y, w, h: number) => void;
+    onMoveStart: () => void;
+    onMoveEnd: () => void;
 }
 
 class Widget extends React.Component<WidgetProps, any> {
@@ -55,6 +57,7 @@ class Widget extends React.Component<WidgetProps, any> {
         const downX = e.clientX - rect.left;
         const downY = e.clientY - rect.top;
 
+        this.props.onMoveStart && this.props.onMoveStart();
         const mouseMove = (e: MouseEvent) => {
             this.setState({left: e.pageX - downX, top: e.pageY - downY}, ()=>{
                 const {left, top, width, height} = this.state;
@@ -63,6 +66,7 @@ class Widget extends React.Component<WidgetProps, any> {
         }
         document.addEventListener('mousemove', mouseMove);
         document.addEventListener('mouseup', (e: MouseEvent) => {
+            this.props.onMoveEnd && this.props.onMoveEnd();
             document.removeEventListener('mousemove', mouseMove);
         }, {once: true});
     }

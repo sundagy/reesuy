@@ -1,7 +1,11 @@
 import Widget from "./widget";
 
-const Tools = ({children, onMove}) => {
-    return (<Widget onMove={onMove}>
+const Tools = ({onMove, onMoveStart, onMoveEnd}) => {
+    return (<Widget
+        onMove={onMove}
+        onMoveStart={onMoveStart}
+        onMoveEnd={onMoveEnd}
+    >
 
         <button>+</button>
 
