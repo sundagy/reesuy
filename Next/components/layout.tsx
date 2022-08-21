@@ -38,7 +38,12 @@ interface WidgetItem {
 interface SideProps {
     wide: boolean;
     items: WidgetItem[];
-    updateItems: (newItems: WidgetItem[]) => void;
+    layout: ILayout;
+}
+
+interface ILayout {
+    widgetStart: () => void
+    widgetMove: () => void
 }
 
 class Side extends React.Component<SideProps, any> {
@@ -55,16 +60,12 @@ class Side extends React.Component<SideProps, any> {
         if (items.filter(a => a.type === 'gizmo').length) {
             return;
         }
-
-        const el = this.sideRef.current;
+        /*const el = this.sideRef.current;
         const br = el.getBoundingClientRect();
-
         if (Math.abs(x - br.left) < 10) {
             console.log('gizmo');
-
-            this.props.updateItems([...items, {type: 'gizmo'}]);
+            //this.props.updateItems([...items, {type: 'gizmo'}]);
         }
-
         /*for (let i=0; i<el.childNodes.length; i++) {
             const w = el.childNodes[i];
             const br = w.getBoundingClientRect();
@@ -72,12 +73,13 @@ class Side extends React.Component<SideProps, any> {
         }*/
     }
     widgetMoveStart(){
-        this.setState({targetMode: true});
-        console.log('start');
+        this.props.layout.widgetStart();
+        //this.setState({targetMode: true});
+        //console.log('start');
     }
     widgetMoveEnd(){
-        this.setState({targetMode: false});
-        console.log('end');
+        //this.setState({targetMode: false});
+        //console.log('end');
     }
     render() {
         const {wide, items} = this.props;
@@ -98,14 +100,14 @@ class Side extends React.Component<SideProps, any> {
     }
 }
 
-class Layout extends React.Component<any, any> {
+class Layout extends React.Component<any, any> implements ILayout {
     private partRefs: React.RefObject<any>[] = [];
     constructor(props) {
         super(props);
         this.state = {
             parts: [
                 {wide: false, items: []},
-                {wide: true, items: [{type: 'workspace'}, {type: 'tools'}]},
+                {wide: true,  items: [{type: 'workspace'}, {type: 'tools'}]},
                 {wide: false, items: []},
             ],
         }
@@ -113,11 +115,23 @@ class Layout extends React.Component<any, any> {
             this.partRefs.push(React.createRef());
         }
     }
-    //widgetMove(x, y, w, h){
-    //    for (let p of this.partRefs) {
-    //        p.current.widgetMove(x,y,w,h)
-    //    }
-    //}
+    widgetMove(){
+
+    }
+    widgetStart(){
+        console.log('widgetStartMove');
+        //for (let p of this.partRefs) {
+        //    p.current.widgetMove(x,y,w,h)
+        //}
+    }
+    updateItems(items, idx){
+        const {parts} = this.state;
+        this.setState({
+            parts: parts.map((a, j) => j == idx
+                ? {...a, items}
+                : a,
+            )});
+    }
     render() {
         const {parts} = this.state;
         return <div className={style.layout}>
@@ -125,11 +139,7 @@ class Layout extends React.Component<any, any> {
                                        ref={this.partRefs[i]}
                                        wide={a.wide}
                                        items={a.items}
-                                       updateItems={ni => this.setState({
-                                           parts: parts.map((a, j) => i===j
-                                               ? {...a, items: ni}
-                                               : a,
-                                           )})}
+                                       layout={this}
             />)}
         </div>
     }
