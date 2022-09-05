@@ -39,32 +39,46 @@ interface SideProps {
     wide: boolean;
     items: WidgetItem[];
     layout: ILayout;
+    updateItems: (items: any[]) => void
 }
 
 interface ILayout {
     widgetStart: () => void
-    widgetMove: () => void
+    widgetStop: () => void
+    widgetMove: (x,y,w,h: number) => void
 }
 
 class Side extends React.Component<SideProps, any> {
     private sideRef: React.RefObject<any>;
     constructor(props) {
         super(props);
-        this.state = {
-            targetMode: false
-        }
+        this.state = {}
         this.sideRef = React.createRef();
     }
-    widgetMove(x, y, w, h){
+    widgetMove(x,y,w,h){
+        this.props.layout.widgetMove(x,y,w,h);
+    }
+    widgetMoveStart(){
+        this.props.layout.widgetStart();
+    }
+    widgetMoveEnd(){
+        this.props.layout.widgetStop();
+    }
+    widgetMoveExt(x, y, w, h){
         const {items} = this.props;
-        if (items.filter(a => a.type === 'gizmo').length) {
-            return;
-        }
-        /*const el = this.sideRef.current;
+        const gizmo = items.filter(a => a.type === 'gizmo').length > 0;
+
+        const el = this.sideRef.current;
         const br = el.getBoundingClientRect();
-        if (Math.abs(x - br.left) < 10) {
+        if (x - br.left > 0 && x - br.right < 0) {
             console.log('gizmo');
-            //this.props.updateItems([...items, {type: 'gizmo'}]);
+            if (!gizmo) {
+                this.props.updateItems([...items, {type: 'gizmo'}]);
+            }
+        } else {
+            if (gizmo) {
+                this.props.updateItems(items.filter(a => a.type !== 'gizmo'));
+            }
         }
         /*for (let i=0; i<el.childNodes.length; i++) {
             const w = el.childNodes[i];
@@ -72,19 +86,9 @@ class Side extends React.Component<SideProps, any> {
             console.log(br);
         }*/
     }
-    widgetMoveStart(){
-        this.props.layout.widgetStart();
-        //this.setState({targetMode: true});
-        //console.log('start');
-    }
-    widgetMoveEnd(){
-        //this.setState({targetMode: false});
-        //console.log('end');
-    }
     render() {
         const {wide, items} = this.props;
-        const {targetMode} = this.state;
-        return <div className={[style.side, ...(targetMode ? ['target'] : [])].join(' ')}
+        return <div className={style.side}
                     ref={this.sideRef}
                     style={wide ? {width: '100%'} : {}}
         >
@@ -110,19 +114,22 @@ class Layout extends React.Component<any, any> implements ILayout {
                 {wide: true,  items: [{type: 'workspace'}, {type: 'tools'}]},
                 {wide: false, items: []},
             ],
+            targetMode: false,
         }
         for (let p of this.state.parts) {
             this.partRefs.push(React.createRef());
         }
     }
-    widgetMove(){
-
+    widgetMove(x,y,w,h){
+        for (let p of this.partRefs) {
+            p.current.widgetMoveExt(x,y,w,h);
+        }
     }
     widgetStart(){
-        console.log('widgetStartMove');
-        //for (let p of this.partRefs) {
-        //    p.current.widgetMove(x,y,w,h)
-        //}
+        this.setState({targetMode: true});
+    }
+    widgetStop(){
+        this.setState({targetMode: false});
     }
     updateItems(items, idx){
         const {parts} = this.state;
@@ -133,12 +140,13 @@ class Layout extends React.Component<any, any> implements ILayout {
             )});
     }
     render() {
-        const {parts} = this.state;
-        return <div className={style.layout}>
+        const {parts, targetMode} = this.state;
+        return <div className={[style.layout, ...(targetMode ? [style.target] : [])].join(' ')}>
             {parts.map((a, i) => <Side key={`s${i}`}
                                        ref={this.partRefs[i]}
                                        wide={a.wide}
                                        items={a.items}
+                                       updateItems={items => this.updateItems(items, i)}
                                        layout={this}
             />)}
         </div>

@@ -16,9 +16,11 @@
   height: 100%;
 }
 
-.side {}
+.side {
+  display: flex;
+}
 
-.side.target {
+.target > * {
     padding: 4px 4px;
     border: 20px solid yellow;
 }
