@@ -37,6 +37,7 @@ interface WidgetItem {
 
 interface SideProps {
     wide: boolean;
+    free: boolean;
     items: WidgetItem[];
     layout: ILayout;
     updateItems: (items: any[]) => void
@@ -64,8 +65,12 @@ class Side extends React.Component<SideProps, any> {
     widgetMoveEnd(){
         this.props.layout.widgetStop();
     }
-    widgetMoveExt(x, y, w, h){
+    movingAnyWidget(x, y, w, h){
         const {items} = this.props;
+        if (this.props.free) {
+            return;
+        }
+
         const gizmo = items.filter(a => a.type === 'gizmo').length > 0;
 
         const el = this.sideRef.current;
@@ -87,8 +92,8 @@ class Side extends React.Component<SideProps, any> {
         }*/
     }
     render() {
-        const {wide, items} = this.props;
-        return <div className={style.side}
+        const {wide, free, items} = this.props;
+        return <div className={[style.side].concat(free ? [style.free] : []).join(' ')}
                     ref={this.sideRef}
                     style={wide ? {width: '100%'} : {}}
         >
@@ -110,9 +115,10 @@ class Layout extends React.Component<any, any> implements ILayout {
         super(props);
         this.state = {
             parts: [
-                {wide: false, items: []},
-                {wide: true,  items: [{type: 'workspace'}, {type: 'tools'}]},
-                {wide: false, items: []},
+                {wide: false, free: true,  items: [{type: 'tools'}]},
+                {wide: false, free: false, items: []},
+                {wide: true,  free: false, items: [{type: 'workspace'}]},
+                {wide: false, free: false, items: []},
             ],
             targetMode: false,
         }
@@ -122,7 +128,7 @@ class Layout extends React.Component<any, any> implements ILayout {
     }
     widgetMove(x,y,w,h){
         for (let p of this.partRefs) {
-            p.current.widgetMoveExt(x,y,w,h);
+            p.current.movingAnyWidget(x,y,w,h);
         }
     }
     widgetStart(){
@@ -142,14 +148,15 @@ class Layout extends React.Component<any, any> implements ILayout {
     render() {
         const {parts, targetMode} = this.state;
         return <div className={[style.layout, ...(targetMode ? [style.target] : [])].join(' ')}>
-            {parts.map((a, i) => <Side key={`s${i}`}
-                                       ref={this.partRefs[i]}
-                                       wide={a.wide}
-                                       items={a.items}
-                                       updateItems={items => this.updateItems(items, i)}
-                                       layout={this}
-            />)}
-        </div>
+                {parts.map((a, i) => <Side key={`s${i}`}
+                                           ref={this.partRefs[i]}
+                                           wide={a.wide}
+                                           free={a.free}
+                                           items={a.items}
+                                           updateItems={items => this.updateItems(items, i)}
+                                           layout={this}
+                />)}
+            </div>
     }
 }
 
