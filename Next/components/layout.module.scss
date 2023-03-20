@@ -31,13 +31,15 @@
 
 .target > * {
   padding: 4px;
-  background-color: red;
+  //background-color: red;
   //border: 2px solid yellow;
+  outline: 1px solid white;
 }
 
 .gizmo {
   display: block;
   position: relative;
-  border: 3px solid blue;
+  outline: 3px solid #f5d84b;
   background-color: #c7c7c7;
+  min-width: 120px;
 }

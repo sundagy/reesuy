@@ -114,11 +114,12 @@ class Layout extends React.Component<any, any> implements ILayout {
     constructor(props) {
         super(props);
         this.state = {
+            gizmoPos: -1,
             parts: [
-                {wide: false, free: true,  items: [{type: 'tools'}]},
                 {wide: false, free: false, items: []},
                 {wide: true,  free: false, items: [{type: 'workspace'}]},
                 {wide: false, free: false, items: []},
+                {wide: false, free: true,  items: [{type: 'tools'}]},
             ],
             targetMode: false,
         }
