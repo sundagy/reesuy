@@ -23,16 +23,14 @@
 .free {
   display: block;
   position: absolute;
-  left:0;
+  left: 0;
   top: 0;
   width: 100%;
   height: 100%;
 }
 
-.target > * {
+.target > div:not(.free) {
   padding: 4px;
-  //background-color: red;
-  //border: 2px solid yellow;
   outline: 1px solid white;
 }
 
@@ -42,4 +40,8 @@
   outline: 3px solid #f5d84b;
   background-color: #c7c7c7;
   min-width: 120px;
+}
+
+.outside {
+  position: relative;
 }

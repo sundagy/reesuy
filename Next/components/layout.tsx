@@ -38,6 +38,7 @@ interface WidgetItem {
 interface SideProps {
     wide: boolean;
     free: boolean;
+    gizmo: boolean;
     items: WidgetItem[];
     layout: ILayout;
     updateItems: (items: any[]) => void
@@ -65,18 +66,15 @@ class Side extends React.Component<SideProps, any> {
     widgetMoveEnd(){
         this.props.layout.widgetStop();
     }
-    movingAnyWidget(x, y, w, h){
+    /*movingAnyWidget(x, y, w, h){
         const {items} = this.props;
         if (this.props.free) {
             return;
         }
-
         const gizmo = items.filter(a => a.type === 'gizmo').length > 0;
-
         const el = this.sideRef.current;
         const br = el.getBoundingClientRect();
         if (x - br.left > 0 && x - br.right < 0) {
-            console.log('gizmo');
             if (!gizmo) {
                 this.props.updateItems([...items, {type: 'gizmo'}]);
             }
@@ -85,15 +83,10 @@ class Side extends React.Component<SideProps, any> {
                 this.props.updateItems(items.filter(a => a.type !== 'gizmo'));
             }
         }
-        /*for (let i=0; i<el.childNodes.length; i++) {
-            const w = el.childNodes[i];
-            const br = w.getBoundingClientRect();
-            console.log(br);
-        }*/
-    }
+    }*/
     render() {
-        const {wide, free, items} = this.props;
-        return <div className={[style.side].concat(free ? [style.free] : []).join(' ')}
+        const {wide, free, gizmo, items} = this.props;
+        return <div className={[style.side].concat(free ? [style.free, 'free'] : []).join(' ')}
                     ref={this.sideRef}
                     style={wide ? {width: '100%'} : {}}
         >
@@ -105,6 +98,7 @@ class Side extends React.Component<SideProps, any> {
                           onMoveEnd={this.widgetMoveEnd.bind(this)}
                 />;
             })}
+            {gizmo && <Gizmo/>}
         </div>;
     }
 }
@@ -128,8 +122,14 @@ class Layout extends React.Component<any, any> implements ILayout {
         }
     }
     widgetMove(x,y,w,h){
-        for (let p of this.partRefs) {
-            p.current.movingAnyWidget(x,y,w,h);
+        const {parts} = this.state;
+        for (let ref of this.partRefs) {
+            if (ref.current.props.free) {
+                continue;
+            }
+            const br = ref.current.sideRef.current.getBoundingClientRect();
+            console.log(br);
+            //p.current.movingAnyWidget(x,y,w,h);
         }
     }
     widgetStart(){
@@ -147,13 +147,14 @@ class Layout extends React.Component<any, any> implements ILayout {
             )});
     }
     render() {
-        const {parts, targetMode} = this.state;
+        const {parts, targetMode, gizmoPos} = this.state;
         return <div className={[style.layout, ...(targetMode ? [style.target] : [])].join(' ')}>
                 {parts.map((a, i) => <Side key={`s${i}`}
                                            ref={this.partRefs[i]}
                                            wide={a.wide}
                                            free={a.free}
                                            items={a.items}
+                                           gizmo={i === gizmoPos}
                                            updateItems={items => this.updateItems(items, i)}
                                            layout={this}
                 />)}
